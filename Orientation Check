@@ -1,0 +1,19 @@
+// --------------------------------------
+// Orientation
+// basically the formula can be found easily by calculating area of a triangle using determinant.
+// the orientation is easily determined by using right hand rule of cross product.
+// Returns:
+//  0  -> Collinear (TOUCH)
+//  1  -> Left turn//counter clockwise (LEFT)
+// -1  -> Right turn//clockwise (RIGHT)
+// we are determining position of point c according to ab line
+// --------------------------------------
+int orientation(const Point &a, const Point &b, const Point &c) {
+    // Cross product (b - a) x (c - b)
+    __int128 cross = (__int128)(b.x - a.x) * (c.y - b.y)
+                   - (__int128)(c.x - b.x) * (b.y - a.y);
+
+    if (cross > 0) return 1;
+    if (cross < 0) return -1;
+    return 0;
+}
