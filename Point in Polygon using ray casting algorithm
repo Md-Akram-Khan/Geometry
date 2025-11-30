@@ -1,0 +1,44 @@
+bool orientation(point a, point b, point c)
+{
+    ll p = (b.x - a.x) * (c.y - b.y) - (c.x - b.x) * (b.y - a.y);
+    if(p == 0)
+        return true;
+    else return false;
+}
+bool onEdge(point a, point b, point c)
+{
+    if(!orientation(a, b, c)) return false;
+    return min(a.x, b.x) <= c.x and c.x <= max(a.x, b.x) and 
+        min(a.y, b.y) <= c.y and c.y <= max(a.y, b.y);
+}
+// ====================================================
+// Ray-casting: check if point is strictly inside polygon
+// Polygon must be simple (non-self-intersecting)
+// ====================================================
+bool isInside(vector<point>&v, point p)
+{
+    int n = v.size();
+    bool inside = false;
+    for(int i = 0, j = n - 1; i < n; j = i++)
+    {
+        point a = v[i];
+        point b = v[j];
+        bool intersect = ((a.y > p.y) != (b.y > p.y)) and 
+        (p.x < (long double)(b.x - a.x) * (p.y - a.y) / (b.y - a.y) + a.x);
+        if(intersect) inside = !inside;
+    }
+    return inside;
+}
+
+string pointInPolygon(vector<point> &poly, point &p) {
+    // Boundary check
+    for (int i = 0, j = poly.size() - 1; i < poly.size(); j = i++) {
+        if (onEdge(poly[i], poly[j], p))
+            return "BOUNDARY";
+    }
+    // Inside check
+    if (isInside(poly, p))
+        return "INSIDE";
+
+    return "OUTSIDE";
+}
