@@ -1,0 +1,41 @@
+// ------------------ Sort Points in CCW Order ------------------
+// 1) Find centroid
+// 2) Sort by angle = atan2(y - cy, x - cx)
+vector<Point> sortCCW(vector<Point> v) {
+    int n = v.size();
+    long double cx = 0, cy = 0;
+
+    // Compute centroid
+    for (auto &p : v) {
+        cx += p.x;
+        cy += p.y;
+    }
+    cx /= n;
+    cy /= n;
+
+    // Sort by angle around centroid
+    sort(v.begin(), v.end(), [&](const Point &a, const Point &b) {
+        long double angA = atan2(a.y - cy, a.x - cx);
+        long double angB = atan2(b.y - cy, b.x - cx);
+        return angA < angB;
+    });
+    return v;
+}
+
+double polygonArea(const vector<Point> &v) {
+    int n = v.size();
+    __int128 A = 0;
+
+    for (int i = 0, j = n - 1; i < n; j = i++) {
+        A += (__int128)v[j].x * v[i].y - (__int128)v[j].y * v[i].x;
+    }
+
+    long double area = fabsl((long double)A) / 2.0;
+    return (double)area;
+}
+
+double areaOfUnorderedPolygon(vector<Point> v) {
+    vector<Point> sorted = sortCCW(v);
+    return polygonArea(sorted);
+}
+
