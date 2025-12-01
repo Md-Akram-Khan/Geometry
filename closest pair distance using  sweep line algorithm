@@ -1,0 +1,47 @@
+long long dist2(const Point& a, const Point& b) {
+    long long dx = a.x - b.x;
+    long long dy = a.y - b.y;
+    return dx*dx + dy*dy;
+}
+ 
+// Main sweep line function
+long long closest_pair(vector<Point>& p) {
+    int n = p.size();
+ 
+    // 1. Sort by x
+    sort(p.begin(), p.end(), [](auto& a, auto& b){
+        return a.x < b.x;
+    });
+ 
+    // Balanced set sorted by (y, x)
+    set<pair<long long,long long>> box;
+ 
+    long long best = LLONG_MAX;
+    int left = 0;
+ 
+    for (int i = 0; i < n; i++) {
+ 
+        // 2. Remove points too far in x-direction
+        while (left < i && (p[i].x - p[left].x)*(p[i].x - p[left].x) > best) {
+            box.erase({p[left].y, p[left].x});
+            left++;
+        }
+ 
+        // 3. Query only points whose y is within [y - d , y + d]
+        long long d = (long long)sqrtl(best) + 1;
+ 
+        auto it1 = box.lower_bound({p[i].y - d, -LLONG_MAX});
+        auto it2 = box.upper_bound({p[i].y + d,  LLONG_MAX});
+ 
+        // check nearby candidates (at most 6–8)
+        for (auto it = it1; it != it2; it++) {
+            Point q = {it->second, it->first};
+            best = min(best, dist2(p[i], q));
+        }
+ 
+        // 4. Insert current point
+        box.insert({p[i].y, p[i].x});
+    }
+ 
+    return best;
+}
