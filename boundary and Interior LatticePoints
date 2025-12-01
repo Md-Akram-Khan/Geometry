@@ -1,0 +1,36 @@
+#define ll long long int
+
+ll polygonArea(const vector<Point> &v) {
+    int n = v.size();
+    __int128 A = 0;   // <-- safer even if your area fits in ll
+
+    for (int i = 0, j = n - 1; i < n; j = i++) {
+        A += (__int128)v[j].x * v[i].y - (__int128)v[j].y * v[i].x;
+    }
+
+    if (A < 0) A = -A;
+    return (ll)(A / 2);   // final area in ll
+}
+
+// ----------------------------
+// Lattice points on boundary
+// ----------------------------
+ll boundaryLatticePoints(const vector<Point> &v) {
+    int n = v.size();
+    ll b = 0;
+
+    for (int i = 0, j = n - 1; i < n; j = i++) {
+        b += __gcd(llabs(v[i].x - v[j].x), llabs(v[i].y - v[j].y));
+    }
+    return b;
+}
+
+// ----------------------------
+// Interior lattice points (Pick's theorem)
+// ----------------------------
+ll interiorLatticePoints(const vector<Point> &v) {
+    ll A = polygonArea(v); // integer area
+    ll B = boundaryLatticePoints(v);
+
+    return A - B / 2 + 1;
+}
