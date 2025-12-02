@@ -10,8 +10,10 @@
 // --------------------------------------
 int orientation(const Point &a, const Point &b, const Point &c) {
     // Cross product (b - a) x (c - b)
-    __int128 cross = (__int128)(b.x - a.x) * (c.y - b.y)
-                   - (__int128)(c.x - b.x) * (b.y - a.y);
+    __int128 cross = (__int128)(b.x - a.x) * (c.y - a.y)
+                   - (__int128)(c.x - a.x) * (b.y - a.y);
+
+
 
     if (cross > 0) return 1;
     if (cross < 0) return -1;
