@@ -1,6 +1,6 @@
 bool orientation(point a, point b, point c)
 {
-    ll p = (b.x - a.x) * (c.y - b.y) - (c.x - b.x) * (b.y - a.y);
+    ll p = (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
     if(p == 0)
         return true;
     else return false;
