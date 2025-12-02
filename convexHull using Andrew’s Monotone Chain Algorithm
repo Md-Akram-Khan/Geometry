@@ -1,0 +1,46 @@
+int orientation(const Point &a, const Point &b, const Point &c) {
+        __int128 v = (__int128)(b.x - a.x) * (c.y - a.y)
+                    - (__int128)(b.y - a.y) * (c.x - a.x);
+        if (v > 0) return 1;
+        if (v < 0) return -1;
+        return 0;
+}
+vector<Point> convexHull_AMC(vector<Point> pts) {
+        sort(pts.begin(), pts.end(), [](auto &a, auto &b){
+            if (a.x == b.x) return a.y < b.y;
+            return a.x < b.x;
+        });
+        //removing duplicate point
+        pts.erase(unique(pts.begin(), pts.end(), [](auto &a, auto &b){
+        return a.x == b.x and a.y == b.y;
+        }), pts.end());
+        int n = pts.size();
+        if (n <= 1) return pts;
+        vector<Point> hull;
+
+        // Lower hull
+        for (int i = 0; i < n; i++) {
+            while (hull.size() >= 2 &&
+                orientation(hull[hull.size()-2], hull[hull.size()-1], pts[i]) < 0)
+// it contains every point that touches the boundary (even those in the middle of a flat edge)
+// if orientation(...) <= 0, This will remove collinear points that lie on the straight edges of the hull.
+// You will only get the corners (vertices). This is usually the preferred behavior.
+            {
+                hull.pop_back();
+            }
+            hull.push_back(pts[i]);
+        }
+
+        // Upper hull
+        int s = hull.size();
+        for (int i = n - 2; i >= 0; i--) {
+            while ((int)hull.size() > s &&
+                orientation(hull[hull.size()-2], hull[hull.size()-1], pts[i]) < 0)
+            {
+                hull.pop_back();
+            }
+            hull.push_back(pts[i]);
+        }
+        hull.pop_back();
+        return hull;
+    }
