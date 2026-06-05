@@ -1,0 +1,45 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+using ull = unsigned long long;
+
+const ull P = 131;
+
+vector<int> rabinKarp(string text, string pattern) {
+    int n = text.size();
+    int m = pattern.size();
+
+    vector<ull> power(n + 1, 1);
+    vector<ull> pref(n + 1, 0);
+
+    for (int i = 0; i < n; i++) {
+        power[i + 1] = power[i] * P;
+        pref[i + 1] = pref[i] * P + text[i];
+    }
+
+    ull patHash = 0;
+    for (char c : pattern)
+        patHash = patHash * P + c;
+
+    vector<int> occ;
+
+    for (int i = 0; i + m <= n; i++) {
+        ull curHash =
+            pref[i + m] - pref[i] * power[m];
+
+        if (curHash == patHash)
+            occ.push_back(i);
+    }
+
+    return occ;
+}
+
+int main() {
+    string text, pattern;
+    cin >> text >> pattern;
+
+    vector<int> ans = rabinKarp(text, pattern);
+
+    for (int pos : ans)
+        cout << pos << ' ';
+}
